@@ -19,6 +19,12 @@ git commit -m "適切なコミットメッセージ"
 git push origin master
 ```
 
+## 仕様書
+
+@docs/画面設計書.md
+@docs/API仕様書.md
+@docs/テスト仕様書.md
+
 ## Notes
 
 This is a new repository. As code and structure are added, update this file to reflect build commands, architecture, and development workflows.
