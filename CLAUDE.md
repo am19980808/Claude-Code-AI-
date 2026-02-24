@@ -21,9 +21,9 @@ git push origin master
 
 ## 仕様書
 
-@docs/画面設計書.md
-@docs/API仕様書.md
-@docs/テスト仕様書.md
+@docs/screen-definition.md
+@docs/api-specification.md
+@docs/test-specification.md
 
 ## Notes
 
