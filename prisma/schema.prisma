@@ -1,0 +1,173 @@
+// =============================================================================
+// 営業日報システム Prisma スキーマ
+// =============================================================================
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// =============================================================================
+// Enum 定義
+// =============================================================================
+
+/// 営業担当者のロール
+enum Role {
+  SALES   // 営業担当者
+  MANAGER // 上長
+  ADMIN   // 管理者
+}
+
+/// 日報のステータス
+enum ReportStatus {
+  DRAFT     // 下書き
+  SUBMITTED // 提出済み
+  CONFIRMED // 確認済み
+  REJECTED  // 差し戻し
+}
+
+// =============================================================================
+// モデル定義
+// =============================================================================
+
+/// 営業担当者（ログインユーザー）
+model SalesStaff {
+  id           Int       @id @default(autoincrement())
+  name         String    @db.VarChar(50)
+  email        String    @unique @db.VarChar(255)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  department   String?   @db.VarChar(50)
+  isManager    Boolean   @default(false) @map("is_manager")
+  /// 所属上長の sales_staff.id（上長がいない場合は NULL）
+  managerId    Int?      @map("manager_id")
+  /// 論理削除日時（NULL = 有効）
+  deletedAt    DateTime? @map("deleted_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  // 自己参照リレーション（上長-部下）
+  manager      SalesStaff?  @relation("ManagerSubordinates", fields: [managerId], references: [id])
+  subordinates SalesStaff[] @relation("ManagerSubordinates")
+
+  // 関連エンティティ
+  roles         SalesStaffRole[]
+  reports       DailyReport[]    @relation("ReportAuthor")
+  comments      Comment[]        @relation("CommentAuthor")
+  assignedCustomers Customer[]   @relation("AssignedSales")
+  revokedTokens RevokedToken[]
+
+  @@map("sales_staff")
+}
+
+/// 営業担当者のロール（1ユーザーが複数ロールを持てる）
+model SalesStaffRole {
+  id           Int        @id @default(autoincrement())
+  salesStaffId Int        @map("sales_staff_id")
+  role         Role
+
+  salesStaff SalesStaff @relation(fields: [salesStaffId], references: [id], onDelete: Cascade)
+
+  /// 同一ユーザーへの同一ロールの重複登録を防ぐ
+  @@unique([salesStaffId, role])
+  @@map("sales_staff_roles")
+}
+
+/// 顧客マスタ
+model Customer {
+  id               Int       @id @default(autoincrement())
+  customerName     String    @map("customer_name") @db.VarChar(100)
+  industry         String?   @db.VarChar(50)
+  address          String?   @db.VarChar(200)
+  phone            String?   @db.VarChar(20)
+  /// 担当営業の sales_staff.id（NULL = 担当者未割り当て）
+  assignedSalesId  Int?      @map("assigned_sales_id")
+  /// 論理削除日時（NULL = 有効）
+  deletedAt        DateTime? @map("deleted_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  assignedSalesStaff SalesStaff?   @relation("AssignedSales", fields: [assignedSalesId], references: [id])
+  visitRecords       VisitRecord[]
+
+  @@map("customers")
+}
+
+/// 日報
+model DailyReport {
+  id             Int          @id @default(autoincrement())
+  /// 報告日（DATE 型）
+  reportDate     DateTime     @map("report_date") @db.Date
+  salesStaffId   Int          @map("sales_staff_id")
+  status         ReportStatus @default(DRAFT)
+  /// 今の課題・相談（最大 2000 文字）
+  currentIssues  String?      @map("current_issues") @db.VarChar(2000)
+  /// 明日やること（最大 2000 文字）
+  tomorrowTasks  String?      @map("tomorrow_tasks") @db.VarChar(2000)
+  /// 差し戻し理由（最大 500 文字、差し戻し時のみ格納）
+  rejectReason   String?      @map("reject_reason") @db.VarChar(500)
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  salesStaff   SalesStaff    @relation("ReportAuthor", fields: [salesStaffId], references: [id])
+  visitRecords VisitRecord[]
+  comments     Comment[]
+
+  /// 同一担当者が同一日に複数日報を作成することを防ぐ
+  @@unique([salesStaffId, reportDate])
+  @@map("daily_reports")
+}
+
+/// 訪問記録（日報に紐づく）
+model VisitRecord {
+  id           Int      @id @default(autoincrement())
+  reportId     Int      @map("report_id")
+  customerId   Int      @map("customer_id")
+  /// 訪問内容（最大 1000 文字）
+  visitContent String   @map("visit_content") @db.VarChar(1000)
+  /// 訪問時刻（"HH:MM" 形式の文字列、任意）
+  visitedAt    String?  @map("visited_at") @db.VarChar(5)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  report   DailyReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  customer Customer    @relation(fields: [customerId], references: [id])
+
+  @@map("visit_records")
+}
+
+/// コメント（上長から営業担当者へ）
+model Comment {
+  id          Int      @id @default(autoincrement())
+  reportId    Int      @map("report_id")
+  commenterId Int      @map("commenter_id")
+  /// コメント内容（最大 1000 文字）
+  content     String   @db.VarChar(1000)
+  /// 営業担当者による既読フラグ
+  isRead      Boolean  @default(false) @map("is_read")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  report    DailyReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  commenter SalesStaff  @relation("CommentAuthor", fields: [commenterId], references: [id])
+
+  @@map("comments")
+}
+
+/// ログアウト済みトークン管理（トークンの無効化）
+model RevokedToken {
+  id           Int      @id @default(autoincrement())
+  /// JWT の jti クレーム（トークンの一意識別子）
+  jti          String   @unique @db.VarChar(255)
+  salesStaffId Int      @map("sales_staff_id")
+  /// トークン本来の有効期限（期限切れ後はレコードを削除可能）
+  expiresAt    DateTime @map("expires_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  salesStaff SalesStaff @relation(fields: [salesStaffId], references: [id], onDelete: Cascade)
+
+  @@map("revoked_tokens")
+}
