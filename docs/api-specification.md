@@ -2,9 +2,9 @@
 
 ## 改訂履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0 | 2026-02-24 | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| ---------- | ---------- | -------- |
+| 1.0        | 2026-02-24 | 初版作成 |
 
 ---
 
@@ -28,10 +28,10 @@ Authorization: Bearer <token>
 
 ### 共通リクエストヘッダー
 
-| ヘッダー | 値 | 必須 |
-|---------|-----|------|
-| Content-Type | `application/json` | ○（リクエストボディあり時） |
-| Authorization | `Bearer <token>` | ○（認証必須エンドポイント） |
+| ヘッダー      | 値                 | 必須                        |
+| ------------- | ------------------ | --------------------------- |
+| Content-Type  | `application/json` | ○（リクエストボディあり時） |
+| Authorization | `Bearer <token>`   | ○（認証必須エンドポイント） |
 
 ### 共通レスポンス形式
 
@@ -76,37 +76,37 @@ Authorization: Bearer <token>
 
 ### HTTPステータスコード
 
-| コード | 説明 |
-|--------|------|
-| 200 | 取得・更新成功 |
-| 201 | 作成成功 |
-| 204 | 削除成功（レスポンスボディなし） |
-| 400 | バリデーションエラー |
-| 401 | 認証エラー（未ログイン・トークン期限切れ） |
-| 403 | 権限エラー |
-| 404 | リソースが存在しない |
-| 409 | 競合エラー（例：同日の日報が既に存在する） |
-| 500 | サーバーエラー |
+| コード | 説明                                       |
+| ------ | ------------------------------------------ |
+| 200    | 取得・更新成功                             |
+| 201    | 作成成功                                   |
+| 204    | 削除成功（レスポンスボディなし）           |
+| 400    | バリデーションエラー                       |
+| 401    | 認証エラー（未ログイン・トークン期限切れ） |
+| 403    | 権限エラー                                 |
+| 404    | リソースが存在しない                       |
+| 409    | 競合エラー（例：同日の日報が既に存在する） |
+| 500    | サーバーエラー                             |
 
 ### エラーコード一覧
 
-| コード | 説明 |
-|--------|------|
-| `VALIDATION_ERROR` | リクエストパラメータが不正 |
-| `UNAUTHORIZED` | 認証が必要 |
-| `FORBIDDEN` | 操作権限がない |
-| `NOT_FOUND` | リソースが見つからない |
-| `CONFLICT` | リソースの競合（同日日報の重複など） |
-| `INVALID_STATUS_TRANSITION` | 許可されていないステータス変更 |
-| `INTERNAL_SERVER_ERROR` | サーバー内部エラー |
+| コード                      | 説明                                 |
+| --------------------------- | ------------------------------------ |
+| `VALIDATION_ERROR`          | リクエストパラメータが不正           |
+| `UNAUTHORIZED`              | 認証が必要                           |
+| `FORBIDDEN`                 | 操作権限がない                       |
+| `NOT_FOUND`                 | リソースが見つからない               |
+| `CONFLICT`                  | リソースの競合（同日日報の重複など） |
+| `INVALID_STATUS_TRANSITION` | 許可されていないステータス変更       |
+| `INTERNAL_SERVER_ERROR`     | サーバー内部エラー                   |
 
 ### 権限ロール
 
-| ロール | 説明 |
-|--------|------|
-| `sales` | 営業担当者 |
+| ロール    | 説明                                         |
+| --------- | -------------------------------------------- |
+| `sales`   | 営業担当者                                   |
 | `manager` | 上長（部下の日報閲覧・コメント・承認が可能） |
-| `admin` | 管理者（マスタ管理が可能） |
+| `admin`   | 管理者（マスタ管理が可能）                   |
 
 > 1ユーザーが複数ロールを持つ場合あり（例：管理者兼上長）
 
@@ -114,31 +114,31 @@ Authorization: Bearer <token>
 
 ## 2. エンドポイント一覧
 
-| カテゴリ | メソッド | パス | 概要 |
-|---------|---------|------|------|
-| 認証 | POST | `/auth/login` | ログイン |
-| 認証 | POST | `/auth/logout` | ログアウト |
-| 認証 | GET | `/auth/me` | ログインユーザー情報取得 |
-| 日報 | GET | `/reports` | 自分の日報一覧取得 |
-| 日報 | POST | `/reports` | 日報作成 |
-| 日報 | GET | `/reports/:id` | 日報詳細取得 |
-| 日報 | PUT | `/reports/:id` | 日報更新 |
-| 日報 | PATCH | `/reports/:id/submit` | 日報提出 |
-| 日報 | PATCH | `/reports/:id/confirm` | 日報確認済み |
-| 日報 | PATCH | `/reports/:id/reject` | 日報差し戻し |
-| コメント | GET | `/reports/:id/comments` | コメント一覧取得 |
-| コメント | POST | `/reports/:id/comments` | コメント投稿 |
-| チーム日報 | GET | `/team/reports` | 部下の日報一覧取得 |
-| 顧客マスタ | GET | `/master/customers` | 顧客一覧取得 |
-| 顧客マスタ | POST | `/master/customers` | 顧客登録 |
-| 顧客マスタ | GET | `/master/customers/:id` | 顧客詳細取得 |
-| 顧客マスタ | PUT | `/master/customers/:id` | 顧客更新 |
-| 顧客マスタ | DELETE | `/master/customers/:id` | 顧客削除 |
-| 営業マスタ | GET | `/master/sales-staff` | 営業担当者一覧取得 |
-| 営業マスタ | POST | `/master/sales-staff` | 営業担当者登録 |
-| 営業マスタ | GET | `/master/sales-staff/:id` | 営業担当者詳細取得 |
-| 営業マスタ | PUT | `/master/sales-staff/:id` | 営業担当者更新 |
-| 営業マスタ | DELETE | `/master/sales-staff/:id` | 営業担当者削除 |
+| カテゴリ   | メソッド | パス                      | 概要                     |
+| ---------- | -------- | ------------------------- | ------------------------ |
+| 認証       | POST     | `/auth/login`             | ログイン                 |
+| 認証       | POST     | `/auth/logout`            | ログアウト               |
+| 認証       | GET      | `/auth/me`                | ログインユーザー情報取得 |
+| 日報       | GET      | `/reports`                | 自分の日報一覧取得       |
+| 日報       | POST     | `/reports`                | 日報作成                 |
+| 日報       | GET      | `/reports/:id`            | 日報詳細取得             |
+| 日報       | PUT      | `/reports/:id`            | 日報更新                 |
+| 日報       | PATCH    | `/reports/:id/submit`     | 日報提出                 |
+| 日報       | PATCH    | `/reports/:id/confirm`    | 日報確認済み             |
+| 日報       | PATCH    | `/reports/:id/reject`     | 日報差し戻し             |
+| コメント   | GET      | `/reports/:id/comments`   | コメント一覧取得         |
+| コメント   | POST     | `/reports/:id/comments`   | コメント投稿             |
+| チーム日報 | GET      | `/team/reports`           | 部下の日報一覧取得       |
+| 顧客マスタ | GET      | `/master/customers`       | 顧客一覧取得             |
+| 顧客マスタ | POST     | `/master/customers`       | 顧客登録                 |
+| 顧客マスタ | GET      | `/master/customers/:id`   | 顧客詳細取得             |
+| 顧客マスタ | PUT      | `/master/customers/:id`   | 顧客更新                 |
+| 顧客マスタ | DELETE   | `/master/customers/:id`   | 顧客削除                 |
+| 営業マスタ | GET      | `/master/sales-staff`     | 営業担当者一覧取得       |
+| 営業マスタ | POST     | `/master/sales-staff`     | 営業担当者登録           |
+| 営業マスタ | GET      | `/master/sales-staff/:id` | 営業担当者詳細取得       |
+| 営業マスタ | PUT      | `/master/sales-staff/:id` | 営業担当者更新           |
+| 営業マスタ | DELETE   | `/master/sales-staff/:id` | 営業担当者削除           |
 
 ---
 
@@ -161,10 +161,10 @@ Authorization: Bearer <token>
 }
 ```
 
-| フィールド | 型 | 必須 | 説明 |
-|-----------|-----|------|------|
-| email | string | ○ | メールアドレス |
-| password | string | ○ | パスワード |
+| フィールド | 型     | 必須 | 説明           |
+| ---------- | ------ | ---- | -------------- |
+| email      | string | ○    | メールアドレス |
+| password   | string | ○    | パスワード     |
 
 **レスポンス `200 OK`**
 
@@ -187,10 +187,10 @@ Authorization: Bearer <token>
 
 **エラーレスポンス**
 
-| ステータス | コード | 説明 |
-|-----------|--------|------|
-| 400 | `VALIDATION_ERROR` | 必須項目が不足 |
-| 401 | `UNAUTHORIZED` | メールアドレスまたはパスワードが不正 |
+| ステータス | コード             | 説明                                 |
+| ---------- | ------------------ | ------------------------------------ |
+| 400        | `VALIDATION_ERROR` | 必須項目が不足                       |
+| 401        | `UNAUTHORIZED`     | メールアドレスまたはパスワードが不正 |
 
 ---
 
@@ -241,13 +241,13 @@ Authorization: Bearer <token>
 
 **クエリパラメータ**
 
-| パラメータ | 型 | 必須 | 説明 |
-|-----------|-----|------|------|
-| from | string (date) | - | 期間開始日 `YYYY-MM-DD`（デフォルト：当月1日） |
-| to | string (date) | - | 期間終了日 `YYYY-MM-DD`（デフォルト：当月末日） |
-| status | string | - | `draft` / `submitted` / `confirmed` / `rejected` |
-| page | integer | - | ページ番号（デフォルト：1） |
-| per_page | integer | - | 1ページあたりの件数（デフォルト：20、最大：100） |
+| パラメータ | 型            | 必須 | 説明                                             |
+| ---------- | ------------- | ---- | ------------------------------------------------ |
+| from       | string (date) | -    | 期間開始日 `YYYY-MM-DD`（デフォルト：当月1日）   |
+| to         | string (date) | -    | 期間終了日 `YYYY-MM-DD`（デフォルト：当月末日）  |
+| status     | string        | -    | `draft` / `submitted` / `confirmed` / `rejected` |
+| page       | integer       | -    | ページ番号（デフォルト：1）                      |
+| per_page   | integer       | -    | 1ページあたりの件数（デフォルト：20、最大：100） |
 
 **レスポンス `200 OK`**
 
@@ -304,16 +304,16 @@ Authorization: Bearer <token>
 }
 ```
 
-| フィールド | 型 | 必須 | 説明 |
-|-----------|-----|------|------|
-| report_date | string (date) | ○ | 報告日 `YYYY-MM-DD` |
-| visit_records | array | - | 訪問記録の配列（0件可） |
-| visit_records[].customer_id | integer | ○ | 顧客ID |
-| visit_records[].visit_content | string | ○ | 訪問内容（最大1000文字） |
-| visit_records[].visited_at | string (time) | - | 訪問時刻 `HH:MM` |
-| current_issues | string | - | 今の課題・相談（最大2000文字） |
-| tomorrow_tasks | string | - | 明日やること（最大2000文字） |
-| status | string | ○ | `draft`（下書き）または `submitted`（提出） |
+| フィールド                    | 型            | 必須 | 説明                                        |
+| ----------------------------- | ------------- | ---- | ------------------------------------------- |
+| report_date                   | string (date) | ○    | 報告日 `YYYY-MM-DD`                         |
+| visit_records                 | array         | -    | 訪問記録の配列（0件可）                     |
+| visit_records[].customer_id   | integer       | ○    | 顧客ID                                      |
+| visit_records[].visit_content | string        | ○    | 訪問内容（最大1000文字）                    |
+| visit_records[].visited_at    | string (time) | -    | 訪問時刻 `HH:MM`                            |
+| current_issues                | string        | -    | 今の課題・相談（最大2000文字）              |
+| tomorrow_tasks                | string        | -    | 明日やること（最大2000文字）                |
+| status                        | string        | ○    | `draft`（下書き）または `submitted`（提出） |
 
 **レスポンス `201 Created`**
 
@@ -349,10 +349,10 @@ Authorization: Bearer <token>
 
 **エラーレスポンス**
 
-| ステータス | コード | 説明 |
-|-----------|--------|------|
-| 400 | `VALIDATION_ERROR` | 入力値が不正 |
-| 409 | `CONFLICT` | 同日の日報が既に存在する |
+| ステータス | コード             | 説明                     |
+| ---------- | ------------------ | ------------------------ |
+| 400        | `VALIDATION_ERROR` | 入力値が不正             |
+| 409        | `CONFLICT`         | 同日の日報が既に存在する |
 
 ---
 
@@ -364,9 +364,9 @@ Authorization: Bearer <token>
 
 **パスパラメータ**
 
-| パラメータ | 型 | 説明 |
-|-----------|-----|------|
-| id | integer | 日報ID |
+| パラメータ | 型      | 説明   |
+| ---------- | ------- | ------ |
+| id         | integer | 日報ID |
 
 **レスポンス `200 OK`**
 
@@ -411,10 +411,10 @@ Authorization: Bearer <token>
 
 **エラーレスポンス**
 
-| ステータス | コード | 説明 |
-|-----------|--------|------|
-| 403 | `FORBIDDEN` | 閲覧権限がない |
-| 404 | `NOT_FOUND` | 日報が存在しない |
+| ステータス | コード      | 説明             |
+| ---------- | ----------- | ---------------- |
+| 403        | `FORBIDDEN` | 閲覧権限がない   |
+| 404        | `NOT_FOUND` | 日報が存在しない |
 
 ---
 
@@ -434,12 +434,12 @@ Authorization: Bearer <token>
 
 **エラーレスポンス**
 
-| ステータス | コード | 説明 |
-|-----------|--------|------|
-| 400 | `VALIDATION_ERROR` | 入力値が不正 |
-| 403 | `FORBIDDEN` | 他人の日報または編集不可ステータス |
-| 404 | `NOT_FOUND` | 日報が存在しない |
-| 409 | `INVALID_STATUS_TRANSITION` | `submitted` / `confirmed` の日報は編集不可 |
+| ステータス | コード                      | 説明                                       |
+| ---------- | --------------------------- | ------------------------------------------ |
+| 400        | `VALIDATION_ERROR`          | 入力値が不正                               |
+| 403        | `FORBIDDEN`                 | 他人の日報または編集不可ステータス         |
+| 404        | `NOT_FOUND`                 | 日報が存在しない                           |
+| 409        | `INVALID_STATUS_TRANSITION` | `submitted` / `confirmed` の日報は編集不可 |
 
 ---
 
@@ -465,11 +465,11 @@ Authorization: Bearer <token>
 
 **エラーレスポンス**
 
-| ステータス | コード | 説明 |
-|-----------|--------|------|
-| 403 | `FORBIDDEN` | 他人の日報 |
-| 404 | `NOT_FOUND` | 日報が存在しない |
-| 409 | `INVALID_STATUS_TRANSITION` | `draft` 以外からは提出不可 |
+| ステータス | コード                      | 説明                       |
+| ---------- | --------------------------- | -------------------------- |
+| 403        | `FORBIDDEN`                 | 他人の日報                 |
+| 404        | `NOT_FOUND`                 | 日報が存在しない           |
+| 409        | `INVALID_STATUS_TRANSITION` | `draft` 以外からは提出不可 |
 
 ---
 
@@ -495,11 +495,11 @@ Authorization: Bearer <token>
 
 **エラーレスポンス**
 
-| ステータス | コード | 説明 |
-|-----------|--------|------|
-| 403 | `FORBIDDEN` | 部下以外の日報 または 上長権限がない |
-| 404 | `NOT_FOUND` | 日報が存在しない |
-| 409 | `INVALID_STATUS_TRANSITION` | `submitted` 以外は確認不可 |
+| ステータス | コード                      | 説明                                 |
+| ---------- | --------------------------- | ------------------------------------ |
+| 403        | `FORBIDDEN`                 | 部下以外の日報 または 上長権限がない |
+| 404        | `NOT_FOUND`                 | 日報が存在しない                     |
+| 409        | `INVALID_STATUS_TRANSITION` | `submitted` 以外は確認不可           |
 
 ---
 
@@ -517,9 +517,9 @@ Authorization: Bearer <token>
 }
 ```
 
-| フィールド | 型 | 必須 | 説明 |
-|-----------|-----|------|------|
-| reason | string | ○ | 差し戻し理由（最大500文字） |
+| フィールド | 型     | 必須 | 説明                        |
+| ---------- | ------ | ---- | --------------------------- |
+| reason     | string | ○    | 差し戻し理由（最大500文字） |
 
 **レスポンス `200 OK`**
 
@@ -536,12 +536,12 @@ Authorization: Bearer <token>
 
 **エラーレスポンス**
 
-| ステータス | コード | 説明 |
-|-----------|--------|------|
-| 400 | `VALIDATION_ERROR` | 理由が未入力 |
-| 403 | `FORBIDDEN` | 部下以外の日報 または 上長権限がない |
-| 404 | `NOT_FOUND` | 日報が存在しない |
-| 409 | `INVALID_STATUS_TRANSITION` | `submitted` 以外は差し戻し不可 |
+| ステータス | コード                      | 説明                                 |
+| ---------- | --------------------------- | ------------------------------------ |
+| 400        | `VALIDATION_ERROR`          | 理由が未入力                         |
+| 403        | `FORBIDDEN`                 | 部下以外の日報 または 上長権限がない |
+| 404        | `NOT_FOUND`                 | 日報が存在しない                     |
+| 409        | `INVALID_STATUS_TRANSITION` | `submitted` 以外は差し戻し不可       |
 
 ---
 
@@ -590,9 +590,9 @@ Authorization: Bearer <token>
 }
 ```
 
-| フィールド | 型 | 必須 | 説明 |
-|-----------|-----|------|------|
-| content | string | ○ | コメント内容（最大1000文字） |
+| フィールド | 型     | 必須 | 説明                         |
+| ---------- | ------ | ---- | ---------------------------- |
+| content    | string | ○    | コメント内容（最大1000文字） |
 
 **レスポンス `201 Created`**
 
@@ -613,11 +613,11 @@ Authorization: Bearer <token>
 
 **エラーレスポンス**
 
-| ステータス | コード | 説明 |
-|-----------|--------|------|
-| 400 | `VALIDATION_ERROR` | 内容が未入力または文字数超過 |
-| 403 | `FORBIDDEN` | 部下以外の日報 または 上長権限がない |
-| 404 | `NOT_FOUND` | 日報が存在しない |
+| ステータス | コード             | 説明                                 |
+| ---------- | ------------------ | ------------------------------------ |
+| 400        | `VALIDATION_ERROR` | 内容が未入力または文字数超過         |
+| 403        | `FORBIDDEN`        | 部下以外の日報 または 上長権限がない |
+| 404        | `NOT_FOUND`        | 日報が存在しない                     |
 
 ---
 
@@ -633,14 +633,14 @@ Authorization: Bearer <token>
 
 **クエリパラメータ**
 
-| パラメータ | 型 | 必須 | 説明 |
-|-----------|-----|------|------|
-| from | string (date) | - | 期間開始日（デフォルト：当月1日） |
-| to | string (date) | - | 期間終了日（デフォルト：当月末日） |
-| sales_id | integer | - | 特定の部下で絞り込み |
-| status | string | - | `submitted` / `confirmed` / `rejected` |
-| page | integer | - | ページ番号（デフォルト：1） |
-| per_page | integer | - | 件数（デフォルト：20、最大：100） |
+| パラメータ | 型            | 必須 | 説明                                   |
+| ---------- | ------------- | ---- | -------------------------------------- |
+| from       | string (date) | -    | 期間開始日（デフォルト：当月1日）      |
+| to         | string (date) | -    | 期間終了日（デフォルト：当月末日）     |
+| sales_id   | integer       | -    | 特定の部下で絞り込み                   |
+| status     | string        | -    | `submitted` / `confirmed` / `rejected` |
+| page       | integer       | -    | ページ番号（デフォルト：1）            |
+| per_page   | integer       | -    | 件数（デフォルト：20、最大：100）      |
 
 **レスポンス `200 OK`**
 
@@ -685,12 +685,12 @@ Authorization: Bearer <token>
 
 **クエリパラメータ**
 
-| パラメータ | 型 | 必須 | 説明 |
-|-----------|-----|------|------|
-| q | string | - | 顧客名・業種での部分一致検索 |
-| for | string | - | `select` を指定すると簡易レスポンス（id・nameのみ） |
-| page | integer | - | ページ番号 |
-| per_page | integer | - | 件数（デフォルト：20） |
+| パラメータ | 型      | 必須 | 説明                                                |
+| ---------- | ------- | ---- | --------------------------------------------------- |
+| q          | string  | -    | 顧客名・業種での部分一致検索                        |
+| for        | string  | -    | `select` を指定すると簡易レスポンス（id・nameのみ） |
+| page       | integer | -    | ページ番号                                          |
+| per_page   | integer | -    | 件数（デフォルト：20）                              |
 
 **レスポンス `200 OK`**
 
@@ -740,13 +740,13 @@ Authorization: Bearer <token>
 }
 ```
 
-| フィールド | 型 | 必須 | 説明 |
-|-----------|-----|------|------|
-| customer_name | string | ○ | 顧客名（最大100文字） |
-| industry | string | - | 業種（最大50文字） |
-| address | string | - | 住所（最大200文字） |
-| phone | string | - | 電話番号 |
-| assigned_sales_id | integer | - | 担当営業ID |
+| フィールド        | 型      | 必須 | 説明                  |
+| ----------------- | ------- | ---- | --------------------- |
+| customer_name     | string  | ○    | 顧客名（最大100文字） |
+| industry          | string  | -    | 業種（最大50文字）    |
+| address           | string  | -    | 住所（最大200文字）   |
+| phone             | string  | -    | 電話番号              |
+| assigned_sales_id | integer | -    | 担当営業ID            |
 
 **レスポンス `201 Created`**
 
@@ -810,9 +810,9 @@ Authorization: Bearer <token>
 
 **エラーレスポンス**
 
-| ステータス | コード | 説明 |
-|-----------|--------|------|
-| 404 | `NOT_FOUND` | 顧客が存在しない |
+| ステータス | コード      | 説明             |
+| ---------- | ----------- | ---------------- |
+| 404        | `NOT_FOUND` | 顧客が存在しない |
 
 ---
 
@@ -828,12 +828,12 @@ Authorization: Bearer <token>
 
 **クエリパラメータ**
 
-| パラメータ | 型 | 必須 | 説明 |
-|-----------|-----|------|------|
-| q | string | - | 氏名・部署での部分一致検索 |
-| is_manager | boolean | - | 上長のみ絞り込む場合 `true` |
-| page | integer | - | ページ番号 |
-| per_page | integer | - | 件数（デフォルト：20） |
+| パラメータ | 型      | 必須 | 説明                        |
+| ---------- | ------- | ---- | --------------------------- |
+| q          | string  | -    | 氏名・部署での部分一致検索  |
+| is_manager | boolean | -    | 上長のみ絞り込む場合 `true` |
+| page       | integer | -    | ページ番号                  |
+| per_page   | integer | -    | 件数（デフォルト：20）      |
 
 **レスポンス `200 OK`**
 
@@ -884,14 +884,14 @@ Authorization: Bearer <token>
 }
 ```
 
-| フィールド | 型 | 必須 | 説明 |
-|-----------|-----|------|------|
-| name | string | ○ | 氏名（最大50文字） |
-| email | string | ○ | メールアドレス（重複不可） |
-| password | string | ○ | パスワード（8文字以上） |
-| department | string | - | 部署（最大50文字） |
-| is_manager | boolean | - | 上長フラグ（デフォルト：false） |
-| manager_id | integer | - | 上長のsales_id |
+| フィールド | 型      | 必須 | 説明                            |
+| ---------- | ------- | ---- | ------------------------------- |
+| name       | string  | ○    | 氏名（最大50文字）              |
+| email      | string  | ○    | メールアドレス（重複不可）      |
+| password   | string  | ○    | パスワード（8文字以上）         |
+| department | string  | -    | 部署（最大50文字）              |
+| is_manager | boolean | -    | 上長フラグ（デフォルト：false） |
+| manager_id | integer | -    | 上長のsales_id                  |
 
 **レスポンス `201 Created`**
 
@@ -915,10 +915,10 @@ Authorization: Bearer <token>
 
 **エラーレスポンス**
 
-| ステータス | コード | 説明 |
-|-----------|--------|------|
-| 400 | `VALIDATION_ERROR` | 入力値が不正 |
-| 409 | `CONFLICT` | メールアドレスが既に使用されている |
+| ステータス | コード             | 説明                               |
+| ---------- | ------------------ | ---------------------------------- |
+| 400        | `VALIDATION_ERROR` | 入力値が不正                       |
+| 409        | `CONFLICT`         | メールアドレスが既に使用されている |
 
 ---
 
@@ -962,9 +962,9 @@ Authorization: Bearer <token>
 
 **エラーレスポンス**
 
-| ステータス | コード | 説明 |
-|-----------|--------|------|
-| 404 | `NOT_FOUND` | 営業担当者が存在しない |
+| ステータス | コード      | 説明                   |
+| ---------- | ----------- | ---------------------- |
+| 404        | `NOT_FOUND` | 営業担当者が存在しない |
 
 ---
 
@@ -984,9 +984,9 @@ Authorization: Bearer <token>
                               submitted（再提出）
 ```
 
-| 現在のステータス | 操作 | 遷移後ステータス | 実行者 |
-|----------------|------|----------------|--------|
-| `draft` | 提出 | `submitted` | 本人 |
-| `submitted` | 確認 | `confirmed` | 上長 |
-| `submitted` | 差し戻し | `rejected` | 上長 |
-| `rejected` | 編集→再提出 | `submitted` | 本人 |
+| 現在のステータス | 操作        | 遷移後ステータス | 実行者 |
+| ---------------- | ----------- | ---------------- | ------ |
+| `draft`          | 提出        | `submitted`      | 本人   |
+| `submitted`      | 確認        | `confirmed`      | 上長   |
+| `submitted`      | 差し戻し    | `rejected`       | 上長   |
+| `rejected`       | 編集→再提出 | `submitted`      | 本人   |
